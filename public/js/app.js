@@ -1859,20 +1859,66 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      currencyOptions: [1, 2, 3],
-      startCurrency: 1,
+      currencyOptions: [],
+      startValue: null,
+      startCurrency: "GBP",
       endCurrency: "USD",
-      result: 0
+      result: null,
+      resultString: ""
     };
   },
   methods: {
-    fetchResult: function fetchResult() {}
+    fetchResult: function fetchResult() {
+      if (!this.startValue) {
+        return alert('Please enter a starting value');
+      }
+
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/currency', {
+        params: {
+          from: vm.startCurrency,
+          to: vm.endCurrency,
+          value: vm.startValue
+        }
+      }).then(function (response) {
+        vm.result = response.data;
+      });
+    },
+    fetchCurrencies: function fetchCurrencies() {
+      var vm = this;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/currencies').then(function (response) {
+        vm.currencyOptions = response.data;
+      });
+    }
   },
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    this.fetchCurrencies();
+  }
 });
 
 /***/ }),
@@ -37192,6 +37238,34 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "card-body" }, [
           _c("div", { staticClass: "form-group" }, [
+            _c("label", { attrs: { for: "start_value" } }, [
+              _vm._v("Start value")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.startValue,
+                  expression: "startValue"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "text", name: "start_value" },
+              domProps: { value: _vm.startValue },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.startValue = $event.target.value
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
             _c("label", { attrs: { for: "start_currency" } }, [
               _vm._v("Starting currency")
             ]),
@@ -37230,7 +37304,71 @@ var render = function() {
               }),
               0
             )
-          ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _c("label", { attrs: { for: "end_currency" } }, [
+              _vm._v("Ending currency")
+            ]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.endCurrency,
+                    expression: "endCurrency"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { name: "end_currency" },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.endCurrency = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  }
+                }
+              },
+              _vm._l(_vm.currencyOptions, function(curr, index) {
+                return _c("option", [_vm._v(_vm._s(curr))])
+              }),
+              0
+            )
+          ]),
+          _vm._v(" "),
+          _vm.result
+            ? _c("div", { staticClass: "my-3" }, [
+                _c("strong", { staticClass: "text-success" }, [
+                  _vm._v(_vm._s(_vm.result))
+                ])
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "a",
+            {
+              staticClass: "btn btn-primary",
+              attrs: { href: "#" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  return _vm.fetchResult($event)
+                }
+              }
+            },
+            [_vm._v("Calculate")]
+          )
         ])
       ])
     ])
