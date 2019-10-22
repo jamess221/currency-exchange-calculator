@@ -37252,7 +37252,7 @@ var render = function() {
                 }
               ],
               staticClass: "form-control",
-              attrs: { type: "text", name: "start_value" },
+              attrs: { type: "number", name: "start_value" },
               domProps: { value: _vm.startValue },
               on: {
                 input: function($event) {

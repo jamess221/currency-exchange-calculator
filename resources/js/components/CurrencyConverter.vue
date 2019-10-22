@@ -9,7 +9,7 @@
                     
                     <div class="form-group">
 						<label for="start_value">Start value</label>
-						<input type="text" name="start_value" class="form-control" v-model="startValue">
+						<input type="number" name="start_value" class="form-control" v-model="startValue">
 					</div>
 
 					<div class="form-group">

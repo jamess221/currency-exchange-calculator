@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
+use App\Http\Requests\CurrencyRequest;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client as Guzzle;
 
@@ -17,20 +18,20 @@ class HomeController extends Controller
     public function currencies()
     {
         // todo: replace with list fetched from external source
-        $currencies = ['GBP', 'USD', 'EUR', 'AUD', 'CAD', 'JPY'];
+        $currencies = config('currency.currencies');
 
         return response()->json($currencies);
     }
 
-    public function calculate(Request $request)
+    public function calculate(CurrencyRequest $request)
     {
         $url = str_replace('{currency}', $request->from, config('currency.base_url'));
 
         $data = simplexml_load_file($url);
 
-        $exchangeObj = $data->xpath("//item[targetCurrency='".$request->to."']")[0];
+        $exchangeObj = $data->xpath("//item[".config('currency.target_key')."='".$request->to."']")[0];
 
-        $rate = (string) $exchangeObj->exchangeRate;
+        $rate = (string) $exchangeObj->{config('currency.rate_key')};
 
         $converted = $request->value * $rate;
 
